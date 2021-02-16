@@ -29,13 +29,13 @@ type Payload<T extends EmitterWebhookEventName> = T extends `${infer E}/${infer 
   : EventPayloadMap[T & WebhookEventName]
 
 // https://github.com/microsoft/TypeScript/issues/42790
-// declare module 'koishi-core/dist/context' {
-//   type WebhookEventMap = {
-//     [E in EmitterWebhookEventName as `github/${E}`]: (payload: Payload<E>) => void
-//   }
+declare module 'koishi-core/dist/context' {
+  type WebhookEventMap = {
+    [E in EmitterWebhookEventName as `github/${E}`]: (payload: Payload<E>) => void
+  }
 
-//   interface EventMap extends WebhookEventMap {}
-// }
+  interface EventMap extends WebhookEventMap {}
+}
 
 export const defaultEvents: EventConfig = {
   commitComment: {
