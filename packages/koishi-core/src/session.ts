@@ -14,7 +14,7 @@ type UnionToIntersection<U> = (U extends any ? (key: U) => void : never) extends
 type Flatten<T, K extends keyof T = keyof T> = UnionToIntersection<T[K]>
 type InnerKeys<T, K extends keyof T = keyof T> = keyof Flatten<T> & keyof Flatten<T, K>
 
-export interface Session<U, G, P, X, Y> extends MessageBase {}
+export interface Session<U, G, P, X> extends MessageBase {}
 
 export namespace Session {
   type Genres = 'friend' | 'channel' | 'group' | 'group-member' | 'group-role' | 'group-file' | 'group-emoji'
@@ -37,11 +37,7 @@ export namespace Session {
     'notice': {
       'poke': {}
       'lucky-king': {}
-      'honor': {
-        'talkative': {}
-        'performer': {}
-        'emotion': {}
-      }
+      'honor': {}
     }
   }
 
@@ -55,10 +51,7 @@ export namespace Session {
     'group': {}
   }
 
-  type ParamX<X> = Extract<keyof Events, X>
-  type ParamY<X, Y> = Extract<InnerKeys<Events, ParamX<X>>, Y>
-
-  export type Payload<X, Y = any> = Session<never, never, Platform, ParamX<X>, ParamY<X, Y>>
+  export type Message = Session<never, never, Platform, MessageAction>
 }
 
 export class Session<
@@ -66,11 +59,10 @@ export class Session<
   G extends Channel.Field = never,
   P extends Platform = Platform,
   X extends keyof Session.Events = keyof Session.Events,
-  Y extends InnerKeys<Session.Events, X> = InnerKeys<Session.Events, X>,
 > {
   type?: X
-  subtype?: Y
-  subsubtype?: InnerKeys<UnionToIntersection<Session.Events[X]>, Y>
+  subtype?: InnerKeys<Session.Events, X>
+  subsubtype?: string
   platform?: P
 
   selfId?: string

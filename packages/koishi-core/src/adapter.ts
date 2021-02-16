@@ -46,9 +46,6 @@ export abstract class Adapter<P extends Platform = Platform> {
     const events: string[] = [session.type]
     if (session.subtype) {
       events.unshift(events[0] + '/' + session.subtype)
-      if (session.subsubtype) {
-        events.unshift(events[0] + '/' + session.subsubtype)
-      }
     }
     for (const event of events) {
       this.app.emit(session, paramCase<any>(event), session)
@@ -195,8 +192,8 @@ export class Bot<P extends Platform> {
     return `${this.platform}:${this.selfId}`
   }
 
-  createSession<T extends keyof Session.Events['send']>(subtype: T, ctxType: 'group' | 'user', ctxId: string, content: string) {
-    return new Session<never, never, P, 'send', T>(this.app, {
+  createSession(subtype: keyof Session.Events['send'], ctxType: 'group' | 'user', ctxId: string, content: string) {
+    return new Session<never, never, P, 'send'>(this.app, {
       content,
       subtype,
       type: 'send',

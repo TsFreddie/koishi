@@ -337,11 +337,7 @@ type FlattenEvents<T> = {
 }[keyof T & string]
 
 type SessionEventMap = {
-  [K in FlattenEvents<Session.Events>]: K extends `${infer X}/${infer R}`
-    ? R extends `${infer Y}/${any}`
-      ? (session: Session.Payload<X, Y>) => void
-      : (session: Session.Payload<X, R>) => void
-    : (session: Session.Payload<K>) => void
+  [K in FlattenEvents<Session.Events>]: (session: Session<never, never, Platform, K extends `${infer X}/${any}` ? X : K>) => void
 }
 
 type EventName = keyof EventMap
